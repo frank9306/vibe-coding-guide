@@ -18,23 +18,6 @@
 
 四条核心原则源头：[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)。
 
-## [README.md](./README.md)
-
-本 README 的英文版。
-
-## 跨 Agent 适配
-
-同一份 `AGENTS.md` 内容可通过软链接或复制，适配到不同编码 agent 的约定路径：
-
-| Agent | 配置文件 | 备注 |
-|---|---|---|
-| **opencode**（主用） | `AGENTS.md` | 全局：`~/.config/opencode/AGENTS.md`；项目级：仓库根 |
-| **Claude Code** | `CLAUDE.md` | 或通过上游 Claude Code 插件市场安装 |
-| **Cursor** | `.cursor/rules/karpathy-guidelines.mdc` | 上游已提供带 `alwaysApply: true` 的规则文件 |
-| **Codex CLI** | `AGENTS.md` | 与 opencode 同名同位置，可直接共用同一份文件 |
-
-> 源头有更新时记得同步本仓库的 `AGENTS.md`。
-
 ## 许可
 
 仅供个人使用，引用请自行判断。

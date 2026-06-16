@@ -18,23 +18,6 @@ The author's full opencode global prompt. Merges the **Karpathy-inspired LLM cod
 
 Source of the four core principles: [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
 
-## [README.zh.md](./README.zh.md)
-
-Chinese version of this README.
-
-## Cross-Agent Usage
-
-The same `AGENTS.md` content is compatible with multiple coding agents — symlink or copy it to the path each agent expects:
-
-| Agent | Config File | Notes |
-|---|---|---|
-| **opencode** (primary) | `AGENTS.md` | Global: `~/.config/opencode/AGENTS.md`; project: repo root |
-| **Claude Code** | `CLAUDE.md` | Or install via the upstream Claude Code plugin marketplace |
-| **Cursor** | `.cursor/rules/karpathy-guidelines.mdc` | Upstream ships a rule with `alwaysApply: true` |
-| **Codex CLI** | `AGENTS.md` | Same filename and location as opencode — share the file directly |
-
-> Keep this file in sync with the upstream source when changes are published.
-
 ## License
 
 Personal use. Reuse at your own discretion.
