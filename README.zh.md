@@ -2,22 +2,25 @@
 
 个人收集的 **vibe-coding** 相关资料合集 —— 文章、笔记、摘要、提示词与参考链接，来源包括个人总结和外部资料。
 
-目的：把那些让 AI 辅助编程真正在实践中起作用的思路、工具、工作流和提示词，集中放在一个可检索的地方。
-
 [English](./README.md)
 
-## 目录结构
+## 文件
 
 ```
 .
-├── README.md          # 英文版
-├── README.zh.md       # 本文件（中文）
-└── AGENTS.md          # Karpathy 启发的 LLM 编码准则
+├── AGENTS.md
+└── README.md
 ```
 
-## 内容
+## [AGENTS.md](./AGENTS.md)
 
-- [Karpathy 启发的 LLM 编码准则](./AGENTS.md) — 四条行为准则（编码前思考 / 简洁优先 / 精准修改 / 目标驱动执行），源自 Andrej Karpathy 对 LLM 编码陷阱的观察。[源头项目](https://github.com/multica-ai/andrej-karpathy-skills)
+仓库主人的完整 opencode 全局提示词。把 **Karpathy 启发的 LLM 编码准则**（编码前思考、简洁优先、精准修改、目标驱动执行）与个人身份、语言、响应风格、工程工作流偏好合并而成。放到 `~/.config/opencode/AGENTS.md` 即可全局生效，也可以放在项目根目录作为单项目覆盖。
+
+四条核心原则源头：[multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills)。
+
+## [README.md](./README.md)
+
+本 README 的英文版。
 
 ## 跨 Agent 适配
 

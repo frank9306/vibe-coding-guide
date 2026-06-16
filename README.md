@@ -2,22 +2,25 @@
 
 A personal collection of useful **vibe-coding** resources — articles, notes, summaries, prompts, and references gathered from personal summaries and external sources.
 
-The goal is to keep a single, searchable place for the ideas, tools, workflows, and prompts that make AI-assisted coding actually work in practice.
-
 [简体中文](./README.zh.md)
 
-## Repository Layout
+## Files
 
 ```
 .
-├── README.md          # this file (English)
-├── README.zh.md       # Chinese version
-└── AGENTS.md          # Karpathy-inspired LLM coding guidelines
+├── AGENTS.md
+└── README.zh.md
 ```
 
-## Contents
+## [AGENTS.md](./AGENTS.md)
 
-- [Karpathy-Inspired LLM Coding Guidelines](./AGENTS.md) — Four behavioral principles (think before coding, simplicity first, surgical changes, goal-driven execution) derived from Andrej Karpathy's observations on LLM coding pitfalls. [Source](https://github.com/multica-ai/andrej-karpathy-skills).
+The author's full opencode global prompt. Merges the **Karpathy-inspired LLM coding guidelines** (think before coding, simplicity first, surgical changes, goal-driven execution) with personal identity, language, response style, and engineering workflow preferences. Drop it into `~/.config/opencode/AGENTS.md` for global use, or keep it at a project root as a per-repo override.
+
+Source of the four core principles: [multica-ai/andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills).
+
+## [README.zh.md](./README.zh.md)
+
+Chinese version of this README.
 
 ## Cross-Agent Usage
 
