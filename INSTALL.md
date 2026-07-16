@@ -74,7 +74,7 @@
 执行前必须原样展示命令并获得明确批准：
 
 ```powershell
-npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g
+npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --skill learn --skill read --skill think --skill write -g
 ```
 
 这是第三方网络安装命令，会调用本机 Node.js/npm 环境并写入全局 Skills 目录。缺少 Node.js、npm 或网络时只报告阻塞，不自动安装运行时，不改用其他远程安装方式。
