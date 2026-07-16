@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Position = 0)]
-    [ValidateSet('install', 'init', 'doctor', 'uninstall')]
+    [ValidateSet('install', 'apply', 'init', 'doctor', 'uninstall')]
     [string]$Command = 'doctor',
     [string]$Path = (Get-Location).Path,
     [string]$HomePath = $HOME,
@@ -45,7 +45,10 @@ function Install-Governance {
     }
     $global = $script:Manifest.install.globalInstructions
     Copy-GovernedItem (Join-Path $script:RepoRoot $global.source) (Join-Path $HomePath $global.target)
-    Write-Status 'NEXT' 'Run: .\scripts\vibe.ps1 init -Path <project>'
+    Write-Status 'NEXT' 'Confirm identity, language, and response style; write rules in English and preserve literal names or phrases.'
+    Write-Status 'RECOMMEND' $script:Manifest.install.recommendedSkills.command
+    Write-Status 'GATE' 'Recommend the manifest-declared Waza Skills, but run the command only after explicit user approval.'
+    Write-Status 'READY' 'Global governance is installed. Apply it to a project only when needed.'
 }
 
 function Initialize-Project {
@@ -53,7 +56,7 @@ function Initialize-Project {
     if (-not (Test-Path -LiteralPath $project -PathType Container)) {
         throw "Project directory does not exist: $project"
     }
-    foreach ($file in $script:Manifest.install.projectFiles) {
+    foreach ($file in $script:Manifest.apply.projectFiles) {
         Copy-GovernedItem (Join-Path $script:RepoRoot $file.source) (Join-Path $project $file.target)
     }
     Write-Status 'NEXT' 'Ask your agent to replace template commands with commands detected from this project.'
@@ -104,6 +107,7 @@ function Uninstall-Governance {
 
 switch ($Command) {
     'install' { Install-Governance }
+    'apply' { Initialize-Project }
     'init' { Initialize-Project }
     'doctor' { Test-Governance }
     'uninstall' { Uninstall-Governance }

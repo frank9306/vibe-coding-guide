@@ -20,11 +20,42 @@ try {
 if ($null -ne $manifest) {
     $declaredPaths = @($manifest.entrypoint, $manifest.install.globalInstructions.source)
     $declaredPaths += @($manifest.install.skills | ForEach-Object { $_.source })
-    $declaredPaths += @($manifest.install.projectFiles | ForEach-Object { $_.source })
+    $declaredPaths += @($manifest.apply.projectFiles | ForEach-Object { $_.source })
     $declaredPaths += @($manifest.policies)
     foreach ($relative in $declaredPaths) {
         if (-not (Test-Path -LiteralPath (Join-Path $root $relative))) {
             Add-Error "Manifest path is missing: $relative"
+        }
+    }
+
+    $personalization = $manifest.install.globalInstructions.personalization
+    $expectedFields = @('identity-and-addressing', 'language', 'response-style')
+    if ($manifest.instructionLanguage -ne 'en' -or $null -eq $personalization -or $personalization.required -ne $true -or $personalization.allowDefaults -ne $true -or $personalization.mode -ne 'agent-guided-review-merge' -or $personalization.writeLanguage -ne 'en' -or $personalization.preserveLiteralValues -ne $true) {
+        Add-Error 'Manifest global personalization contract is invalid'
+    } else {
+        $actualFields = @($personalization.fields)
+        foreach ($field in $expectedFields) {
+            if ($field -notin $actualFields) {
+                Add-Error "Manifest personalization field is missing: $field"
+            }
+        }
+    }
+
+    $recommended = $manifest.install.recommendedSkills
+    $expectedRecommendedSkills = @('check', 'design', 'health', 'hunt', 'learn', 'read', 'think', 'write')
+    $expectedCommand = 'npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g'
+    if ($null -eq $recommended -or $recommended.installByDefault -ne $false -or $recommended.requiresExplicitApproval -ne $true -or $recommended.command -ne $expectedCommand) {
+        Add-Error 'Recommended Skills installation contract is invalid'
+    } else {
+        foreach ($skill in $expectedRecommendedSkills) {
+            if ($skill -notin @($recommended.skills)) {
+                Add-Error "Recommended Skill is missing: $skill"
+            }
+        }
+        foreach ($gate in @('show-source-command-and-skill-list', 'check-existing-skills-and-conflicts', 'explicit-user-approval', 'verify-installed-skills')) {
+            if ($gate -notin @($recommended.gates)) {
+                Add-Error "Recommended Skills gate is missing: $gate"
+            }
         }
     }
 }
@@ -64,6 +95,11 @@ if ($rootAgents -match 'replace with|TODO|TBD') {
     Add-Error 'Root AGENTS.md contains an unfinished placeholder'
 }
 
+$distributedGlobalAgents = Get-Content -LiteralPath (Join-Path $root $manifest.install.globalInstructions.source) -Raw -Encoding utf8
+if ($distributedGlobalAgents -notmatch '^# Global Agent Instructions' -or $distributedGlobalAgents -notmatch 'Respond in Simplified Chinese by default\.') {
+    Add-Error 'Distributed global instructions do not follow the English-rules/Chinese-response language contract'
+}
+
 Push-Location $root
 try {
     $previousErrorAction = $ErrorActionPreference
@@ -87,6 +123,9 @@ if ($errors.Count -gt 0) {
 
 Write-Host '[PASS] JSON manifest and schema parse'
 Write-Host '[PASS] Manifest paths exist'
+Write-Host '[PASS] Global personalization contract is valid'
+Write-Host '[PASS] Instruction language contract is valid'
+Write-Host '[PASS] Recommended Skills gates are valid'
 Write-Host '[PASS] Markdown links resolve'
 Write-Host '[PASS] Skill frontmatter is valid'
 Write-Host '[PASS] PowerShell scripts parse'

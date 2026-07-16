@@ -1,14 +1,27 @@
 {
   "$schema": "./vibe-standard.schema.json",
   "name": "frank-vibe-coding-standard",
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "language": "zh-CN",
+  "instructionLanguage": "en",
   "entrypoint": "INSTALL.md",
   "install": {
     "globalInstructions": {
       "source": "standard/AGENTS.md",
       "target": ".agents/AGENTS.md",
-      "strategy": "preserve-or-review-merge"
+      "strategy": "preserve-or-review-merge",
+      "personalization": {
+        "required": true,
+        "allowDefaults": true,
+        "mode": "agent-guided-review-merge",
+        "writeLanguage": "en",
+        "preserveLiteralValues": true,
+        "fields": [
+          "identity-and-addressing",
+          "language",
+          "response-style"
+        ]
+      }
     },
     "skills": [
       {
@@ -17,6 +30,31 @@
         "target": ".agents/skills/project-bootstrap"
       }
     ],
+    "recommendedSkills": {
+      "source": "tw93/Waza",
+      "scope": "global",
+      "installByDefault": false,
+      "requiresExplicitApproval": true,
+      "command": "npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g",
+      "skills": [
+        "check",
+        "design",
+        "health",
+        "hunt",
+        "learn",
+        "read",
+        "think",
+        "write"
+      ],
+      "gates": [
+        "show-source-command-and-skill-list",
+        "check-existing-skills-and-conflicts",
+        "explicit-user-approval",
+        "verify-installed-skills"
+      ]
+    }
+  },
+  "apply": {
     "projectFiles": [
       {
         "source": "standard/project/AGENTS.md",
@@ -48,7 +86,8 @@
     "authentication-or-authorization-changes",
     "git-commit-or-push",
     "deploy-or-publish",
-    "send-private-data-to-third-parties"
+    "send-private-data-to-third-parties",
+    "install-recommended-third-party-skills"
   ],
   "policies": [
     "docs/skill-portfolio.md",

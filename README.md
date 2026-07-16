@@ -1,6 +1,6 @@
 # Vibe Coding Governance
 
-一套面向个人开发者的 Vibe Coding 治理标准与可安装配置。这个仓库既解释如何治理 Agent、Plugin、Skill 和 MCP，也负责分发一套能够通过一句话安装到当前环境的标准配置。
+一套面向个人开发者的 Vibe Coding 治理标准与可安装配置。它先全局安装到用户的 Agent 环境；新建项目或在已有项目中应用时，Agent 再按照这套约定建立项目契约。
 
 适用技术栈：Python CLI、Python 后端、Go 和前端。仓库提供治理原则、机器可读清单、标准规则、项目模板以及受控的 `project-bootstrap` Skill，不绑定具体模型或 IDE。
 
@@ -117,21 +117,27 @@ Vibe Coding 失控通常不是模型不够强，而是配置层混乱：
 在 Codex、Claude Code、OpenCode 或其他能够访问 Git 和本地文件的编码 Agent 中直接说：
 
 ```text
-安装 https://github.com/frank9306/vibe-coding-guide 的 Vibe Coding 治理规范，
-并治理当前项目；保留已有配置，不要提交代码。
+全局安装 https://github.com/frank9306/vibe-coding-guide 的 Vibe Coding 治理规范；
+保留已有配置，不要修改任何项目，不要提交代码。
 ```
 
 Agent 应先读取 [`vibe-standard.json`](vibe-standard.json)，再按照 [`INSTALL.md`](INSTALL.md) 的安装语义自动完成：
 
-1. 检查当前环境和项目 Git 状态。
+1. 检查当前用户环境。
 2. 保留已有全局规则，缺少时才安装基础模板。
-3. 安装或安全更新 `project-bootstrap` Skill。
-4. 读取当前项目的代码、manifest、锁文件和 CI。
-5. 创建或整理项目 `AGENTS.md`，写入真实命令。
-6. 按需建立 Claude Code 薄适配层。
-7. 运行治理检查并报告结果。
+3. 用中文确认身份与称呼、默认语言和回复风格；用户也可以明确选择默认值。
+4. 安装或安全更新 `project-bootstrap` Skill。
+5. 通过门禁推荐 `tw93/Waza` 的核心 Skills，只有用户明确批准后才安装。
+6. 报告全局安装结果，不读取或修改任何项目。
 
-用户不需要先理解目录结构，也不需要手工执行安装命令。`vibe-standard.json` 声明“安装什么”，`INSTALL.md` 声明“如何安全安装”，`scripts/vibe.ps1` 是 AI 在 Windows 中可以选择调用的底层实现。
+用户不需要先理解目录结构，也不需要手工执行安装命令。`vibe-standard.json` 分别声明全局 `install` 和项目 `apply`，`INSTALL.md` 定义两者的安全语义，`scripts/vibe.ps1` 是 AI 在 Windows 中可以选择调用的底层实现。
+
+全局安装完成后，在新建项目或已有项目中明确告诉 Agent：
+
+```text
+在当前项目应用已安装的 Vibe Coding 治理规范；读取项目真实配置，
+保留已有规则，不要安装依赖，不要提交代码。
+```
 
 ### 手工安装与故障排查
 
@@ -143,15 +149,23 @@ Set-Location vibe-coding-guide
 .\scripts\vibe.ps1 install
 ```
 
-`install` 会把 `project-bootstrap` 安装到 `~/.agents/skills/`；仅当 `~/.agents/AGENTS.md` 不存在时，才安装精简的全局规则模板。它不会安装依赖、Plugin 或 MCP，也不会覆盖已有文件。确实需要替换时使用 `-Force`，脚本会先创建带时间戳的备份。
+`install` 会把 `project-bootstrap` 安装到 `~/.agents/skills/`；仅当 `~/.agents/AGENTS.md` 不存在时，才安装精简的全局规则模板。它不会安装依赖、Plugin 或 MCP，也不会覆盖已有文件。确实需要替换时使用 `-Force`，脚本会先创建带时间戳的备份。脚本完成后，AI 必须确认身份与称呼、默认语言和回复风格，展示差异并经确认后写入同一份全局 `AGENTS.md`。
+
+个性化确认后，AI 会推荐以下第三方全局 Skills，但不会自动安装：
+
+```powershell
+npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g
+```
+
+执行前必须展示来源、命令、Skill 列表和已有冲突，并获得用户明确批准。用户跳过不影响治理规范安装完成。
 
 在需要治理的项目中执行：
 
 ```powershell
-.\scripts\vibe.ps1 init -Path E:\path\to\your-project
+.\scripts\vibe.ps1 apply -Path E:\path\to\your-project
 ```
 
-这会在目标项目缺少对应文件时添加 `AGENTS.md` 项目模板和只导入它的 `CLAUDE.md`。然后在目标项目中告诉 Agent：
+这会在目标项目缺少对应文件时添加 `AGENTS.md` 项目模板和只导入它的 `CLAUDE.md`。`init` 暂时作为兼容别名保留。然后在目标项目中告诉 Agent：
 
 ```text
 使用 project-bootstrap 治理当前项目。读取现有代码、manifest、锁文件和 CI，
@@ -174,7 +188,15 @@ Set-Location vibe-coding-guide
 
 ### 建立个人全局规则
 
-从 [`standard/AGENTS.md`](standard/AGENTS.md) 选择真正适合你的内容放入全局 Agent 指令。全局层只保留回复偏好、Git 与文件安全、修改原则和验证诚实性。
+[`standard/AGENTS.md`](standard/AGENTS.md) 是唯一安装方式使用的英文全局基线。AI 安装时可以用中文访谈，但写入文件的规则统一整理成英文，中文名称、称呼和固定短语保持原样。用户必须确认以下个人偏好，也可以直接选择默认值：
+
+- Agent 的身份、自称以及对用户的称呼。
+- 默认回复语言和语言切换条件。
+- 回复长度、语气、结构和不希望出现的表达。
+
+个性化内容经用户确认后直接写入全局 `AGENTS.md`。全局层只保存跨项目长期成立的偏好、Git 与文件安全、修改原则和验证诚实性，不保存项目命令、机器路径、凭据或项目专属规则。
+
+语言约定：全局和项目 `AGENTS.md`、Skills 以及可复用 Prompt 规则使用英文；README、安装说明和日常对话默认使用简体中文。规则文件使用英文不会改变最终回复语言，回复语言仍由全局规则和用户当前要求决定。
 
 ### 给项目添加规则
 
@@ -189,8 +211,8 @@ Set-Location vibe-coding-guide
 | 意图 | Skill |
 |---|---|
 | 需求与方案 | `think` |
+| 界面设计 | `design` |
 | Bug 根因 | `hunt` |
-| 测试驱动 | `tdd` |
 | 代码和发布审查 | `check` |
 | Agent 环境审计 | `health` |
 | 调研 | `learn`、`read` |
@@ -251,7 +273,7 @@ Set-Location vibe-coding-guide
 
 - 不提供适合所有项目的巨大 Prompt。
 - 不要求统一使用 `.ai/` 目录。
-- 不批量安装第三方 Skill、MCP 或 Plugin。
+- 不安装清单之外的第三方 Skill，不绕过来源、冲突、授权和验证门禁批量安装。
 - 不把全部开发权限交给 Agent。
 - 不用文档代替测试、lint、构建和安全检查。
 - 不强制所有语言采用同一种目录结构。

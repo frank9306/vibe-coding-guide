@@ -2,15 +2,36 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Vibe Coding Standard Manifest",
   "type": "object",
-  "required": ["name", "schemaVersion", "entrypoint", "install", "approvalRequired"],
+  "required": ["name", "schemaVersion", "entrypoint", "install", "apply", "approvalRequired"],
   "properties": {
     "name": { "type": "string", "minLength": 1 },
     "schemaVersion": { "type": "integer", "minimum": 1 },
     "language": { "type": "string" },
+    "instructionLanguage": { "type": "string" },
     "entrypoint": { "type": "string", "minLength": 1 },
     "install": {
       "type": "object",
-      "required": ["globalInstructions", "skills", "projectFiles"]
+      "required": ["globalInstructions", "skills", "recommendedSkills"],
+      "properties": {
+        "globalInstructions": {
+          "type": "object",
+          "required": ["source", "target", "strategy"],
+          "properties": {
+            "personalization": {
+              "type": "object",
+              "required": ["required", "allowDefaults", "mode", "writeLanguage", "preserveLiteralValues", "fields"]
+            }
+          }
+        },
+        "recommendedSkills": {
+          "type": "object",
+          "required": ["source", "scope", "installByDefault", "requiresExplicitApproval", "command", "skills", "gates"]
+        }
+      }
+    },
+    "apply": {
+      "type": "object",
+      "required": ["projectFiles"]
     },
     "defaults": { "type": "object" },
     "approvalRequired": {
