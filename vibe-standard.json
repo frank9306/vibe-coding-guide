@@ -1,0 +1,59 @@
+{
+  "$schema": "./vibe-standard.schema.json",
+  "name": "frank-vibe-coding-standard",
+  "schemaVersion": 1,
+  "language": "zh-CN",
+  "entrypoint": "INSTALL.md",
+  "install": {
+    "globalInstructions": {
+      "source": "standard/AGENTS.md",
+      "target": ".agents/AGENTS.md",
+      "strategy": "preserve-or-review-merge"
+    },
+    "skills": [
+      {
+        "name": "project-bootstrap",
+        "source": "skills/project-bootstrap",
+        "target": ".agents/skills/project-bootstrap"
+      }
+    ],
+    "projectFiles": [
+      {
+        "source": "standard/project/AGENTS.md",
+        "target": "AGENTS.md",
+        "strategy": "preserve-or-project-aware-merge"
+      },
+      {
+        "source": "standard/project/CLAUDE.md",
+        "target": "CLAUDE.md",
+        "strategy": "preserve-or-thin-adapter"
+      }
+    ]
+  },
+  "defaults": {
+    "instructionSourceOfTruth": "AGENTS.md",
+    "packageManagers": {
+      "python": "uv",
+      "frontend": "pnpm",
+      "go": "go"
+    },
+    "verificationRequired": true,
+    "minimumChangeScope": true
+  },
+  "approvalRequired": [
+    "overwrite-existing-files",
+    "install-or-upgrade-dependencies",
+    "delete-files-or-data",
+    "database-migrations",
+    "authentication-or-authorization-changes",
+    "git-commit-or-push",
+    "deploy-or-publish",
+    "send-private-data-to-third-parties"
+  ],
+  "policies": [
+    "docs/skill-portfolio.md",
+    "docs/mcp-plugin-policy.md",
+    "docs/project-onboarding.md",
+    "docs/security-and-maintenance.md"
+  ]
+}

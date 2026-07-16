@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vibe Coding Standard Manifest",
+  "type": "object",
+  "required": ["name", "schemaVersion", "entrypoint", "install", "approvalRequired"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "type": "integer", "minimum": 1 },
+    "language": { "type": "string" },
+    "entrypoint": { "type": "string", "minLength": 1 },
+    "install": {
+      "type": "object",
+      "required": ["globalInstructions", "skills", "projectFiles"]
+    },
+    "defaults": { "type": "object" },
+    "approvalRequired": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "policies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,8 +1,10 @@
 # Vibe Coding Governance
 
-一套面向个人开发者的 Vibe Coding 治理仓库。目标不是继续收集 Agent、Plugin、Skill 和 MCP，而是让 Codex、Claude Code、OpenCode 等工具在同一套规则、权限和验证闭环中稳定工作。
+一套面向个人开发者的 Vibe Coding 治理标准与可安装配置。这个仓库既解释如何治理 Agent、Plugin、Skill 和 MCP，也负责分发一套能够通过一句话安装到当前环境的标准配置。
 
-适用技术栈：Python CLI、Python 后端、Go 和前端。这里提供治理原则、可复制模板以及一个受控的 `project-bootstrap` Skill，不绑定具体模型或 IDE。
+适用技术栈：Python CLI、Python 后端、Go 和前端。仓库提供治理原则、机器可读清单、标准规则、项目模板以及受控的 `project-bootstrap` Skill，不绑定具体模型或 IDE。
+
+其中 [`vibe-standard.json`](vibe-standard.json) 是配置包清单，[`INSTALL.md`](INSTALL.md) 是 AI 安装契约。用户不需要逐篇阅读文档后再手工拼配置。
 
 ## 为什么需要治理
 
@@ -85,7 +87,14 @@ Vibe Coding 失控通常不是模型不够强，而是配置层混乱：
 ```text
 .
 ├── AGENTS.md
+├── CLAUDE.md
+├── INSTALL.md
 ├── README.md
+├── vibe-standard.json
+├── vibe-standard.schema.json
+├── scripts/
+│   ├── vibe.ps1
+│   └── verify.ps1
 ├── docs/
 │   ├── mcp-plugin-policy.md
 │   ├── project-onboarding.md
@@ -94,23 +103,84 @@ Vibe Coding 失控通常不是模型不够强，而是配置层混乱：
 ├── skills/project-bootstrap/
 │   ├── SKILL.md
 │   └── references/stack-profiles.md
-└── templates/
-    ├── AGENTS.global.example.md
-    ├── AGENTS.project.example.md
-    └── CLAUDE.md
+└── standard/
+    ├── AGENTS.md
+    └── project/
+        ├── AGENTS.md
+        └── CLAUDE.md
 ```
 
 ## 快速开始
 
+### 推荐：对 AI 说一句话
+
+在 Codex、Claude Code、OpenCode 或其他能够访问 Git 和本地文件的编码 Agent 中直接说：
+
+```text
+安装 https://github.com/frank9306/vibe-coding-guide 的 Vibe Coding 治理规范，
+并治理当前项目；保留已有配置，不要提交代码。
+```
+
+Agent 应先读取 [`vibe-standard.json`](vibe-standard.json)，再按照 [`INSTALL.md`](INSTALL.md) 的安装语义自动完成：
+
+1. 检查当前环境和项目 Git 状态。
+2. 保留已有全局规则，缺少时才安装基础模板。
+3. 安装或安全更新 `project-bootstrap` Skill。
+4. 读取当前项目的代码、manifest、锁文件和 CI。
+5. 创建或整理项目 `AGENTS.md`，写入真实命令。
+6. 按需建立 Claude Code 薄适配层。
+7. 运行治理检查并报告结果。
+
+用户不需要先理解目录结构，也不需要手工执行安装命令。`vibe-standard.json` 声明“安装什么”，`INSTALL.md` 声明“如何安全安装”，`scripts/vibe.ps1` 是 AI 在 Windows 中可以选择调用的底层实现。
+
+### 手工安装与故障排查
+
+只有 AI 无法访问 Git 或自动安装失败时，才需要在 Windows PowerShell 中执行：
+
+```powershell
+git clone https://github.com/frank9306/vibe-coding-guide.git
+Set-Location vibe-coding-guide
+.\scripts\vibe.ps1 install
+```
+
+`install` 会把 `project-bootstrap` 安装到 `~/.agents/skills/`；仅当 `~/.agents/AGENTS.md` 不存在时，才安装精简的全局规则模板。它不会安装依赖、Plugin 或 MCP，也不会覆盖已有文件。确实需要替换时使用 `-Force`，脚本会先创建带时间戳的备份。
+
+在需要治理的项目中执行：
+
+```powershell
+.\scripts\vibe.ps1 init -Path E:\path\to\your-project
+```
+
+这会在目标项目缺少对应文件时添加 `AGENTS.md` 项目模板和只导入它的 `CLAUDE.md`。然后在目标项目中告诉 Agent：
+
+```text
+使用 project-bootstrap 治理当前项目。读取现有代码、manifest、锁文件和 CI，
+把 AGENTS.md 中的模板命令替换为真实命令；不要安装依赖，不要 commit。
+```
+
+完成后检查：
+
+```powershell
+.\scripts\vibe.ps1 doctor -Path E:\path\to\your-project
+```
+
+卸载只移除本仓库安装的 Skill，不删除全局或项目规则：
+
+```powershell
+.\scripts\vibe.ps1 uninstall
+```
+
+脚本面向当前 Windows 环境。其他系统仍可按照 `vibe-standard.json` 复制 `standard/` 和 `skills/project-bootstrap/`，有真实需求后再增加跨平台脚本。
+
 ### 建立个人全局规则
 
-从 [`templates/AGENTS.global.example.md`](templates/AGENTS.global.example.md) 选择真正适合你的内容放入全局 Agent 指令。不要整份照搬。全局层只保留回复偏好、Git 与文件安全、修改原则和验证诚实性。
+从 [`standard/AGENTS.md`](standard/AGENTS.md) 选择真正适合你的内容放入全局 Agent 指令。全局层只保留回复偏好、Git 与文件安全、修改原则和验证诚实性。
 
 ### 给项目添加规则
 
-将 [`templates/AGENTS.project.example.md`](templates/AGENTS.project.example.md) 复制到目标仓库根目录并命名为 `AGENTS.md`，替换其中所有示例命令。Agent 指令里的每条验证命令都必须真实可执行。
+将 [`standard/project/AGENTS.md`](standard/project/AGENTS.md) 复制到目标仓库根目录并命名为 `AGENTS.md`，替换其中所有示例命令。Agent 指令里的每条验证命令都必须真实可执行。
 
-需要 Claude Code 时，再复制 [`templates/CLAUDE.md`](templates/CLAUDE.md)。它只导入 `AGENTS.md`。
+需要 Claude Code 时，再复制 [`standard/project/CLAUDE.md`](standard/project/CLAUDE.md)。它只导入 `AGENTS.md`。
 
 ### 只保留核心 Skill 心智模型
 
