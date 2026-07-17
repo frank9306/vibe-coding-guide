@@ -69,7 +69,7 @@
 
 ## 推荐 Skills 门禁
 
-个性化规则确认后，Agent 可以推荐以下全局 Skills：`check`、`design`、`health`、`hunt`、`learn`、`read`、`think`、`write`。
+个性化规则确认后，Agent 可以推荐以下全局 Skills：`check`、`ui`、`health`、`hunt`、`learn`、`read`、`think`、`write`。
 
 执行前必须原样展示命令并获得明确批准：
 
