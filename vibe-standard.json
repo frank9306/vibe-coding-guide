@@ -35,10 +35,10 @@
       "scope": "global",
       "installByDefault": false,
       "requiresExplicitApproval": true,
-      "command": "npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g",
+      "command": "npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --skill learn --skill read --skill think --skill write -g",
       "skills": [
         "check",
-        "design",
+        "ui",
         "health",
         "hunt",
         "learn",
