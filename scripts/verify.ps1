@@ -42,8 +42,8 @@ if ($null -ne $manifest) {
     }
 
     $recommended = $manifest.install.recommendedSkills
-    $expectedRecommendedSkills = @('check', 'design', 'health', 'hunt', 'learn', 'read', 'think', 'write')
-    $expectedCommand = 'npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g'
+    $expectedRecommendedSkills = @('check', 'ui', 'health', 'hunt', 'learn', 'read', 'think', 'write')
+    $expectedCommand = 'npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --skill learn --skill read --skill think --skill write -g'
     if ($null -eq $recommended -or $recommended.installByDefault -ne $false -or $recommended.requiresExplicitApproval -ne $true -or $recommended.command -ne $expectedCommand) {
         Add-Error 'Recommended Skills installation contract is invalid'
     } else {

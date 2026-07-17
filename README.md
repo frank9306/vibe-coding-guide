@@ -154,7 +154,7 @@ Set-Location vibe-coding-guide
 个性化确认后，AI 会推荐以下第三方全局 Skills，但不会自动安装：
 
 ```powershell
-npx skills add tw93/Waza --skill check --skill design --skill health --skill hunt --skill learn --skill read --skill think --skill write -g
+npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --skill learn --skill read --skill think --skill write -g
 ```
 
 执行前必须展示来源、命令、Skill 列表和已有冲突，并获得用户明确批准。用户跳过不影响治理规范安装完成。
@@ -211,7 +211,7 @@ npx skills add tw93/Waza --skill check --skill design --skill health --skill hun
 | 意图 | Skill |
 |---|---|
 | 需求与方案 | `think` |
-| 界面设计 | `design` |
+| 界面设计 | `ui` |
 | Bug 根因 | `hunt` |
 | 代码和发布审查 | `check` |
 | Agent 环境审计 | `health` |
