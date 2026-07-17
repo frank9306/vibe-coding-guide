@@ -6,7 +6,7 @@
 
 ### Fixed
 
-- 全局安装现在优先将规则写入当前 `CODEX_HOME/AGENTS.md`，并在没有 `CODEX_HOME` 时回退到 `~/.agents/AGENTS.md`。
+- 全局安装现在将规则写入当前平台 Home 根部的 `AGENTS.md`：Codex 使用 `CODEX_HOME`；其他平台必须提供其平台 Home，识别不到时停止且不回退到用户目录。
 
 ## [1.1.1] - 2026-07-17
 

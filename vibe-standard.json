@@ -10,9 +10,9 @@
       "source": "standard/AGENTS.md",
       "targetResolution": {
         "preferredEnvironmentVariable": "CODEX_HOME",
-        "preferredRelativePath": "AGENTS.md",
-        "fallbackBase": "user-home",
-        "fallbackRelativePath": ".agents/AGENTS.md"
+        "relativePath": "AGENTS.md",
+        "requireAgentHome": true,
+        "allowUserHomeFallback": false
       },
       "strategy": "preserve-or-review-merge",
       "personalization": {

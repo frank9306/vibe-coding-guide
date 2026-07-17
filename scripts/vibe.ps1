@@ -5,26 +5,21 @@ param(
     [string]$Command = 'doctor',
     [string]$Path = (Get-Location).Path,
     [string]$HomePath = $HOME,
-    [string]$CodexHomePath = $env:CODEX_HOME,
+    [string]$AgentHomePath = $env:CODEX_HOME,
     [switch]$Force
 )
 
 $ErrorActionPreference = 'Stop'
-$script:HomePathExplicit = $PSBoundParameters.ContainsKey('HomePath')
-$script:CodexHomePathExplicit = $PSBoundParameters.ContainsKey('CodexHomePath')
 $script:RepoRoot = Split-Path -Parent $PSScriptRoot
 $script:Manifest = Get-Content -LiteralPath (Join-Path $script:RepoRoot 'vibe-standard.json') -Raw -Encoding utf8 | ConvertFrom-Json
 $script:InstalledSkill = Join-Path $HomePath $script:Manifest.install.skills[0].target
 
 function Resolve-GlobalInstructionsTarget {
     $resolution = $script:Manifest.install.globalInstructions.targetResolution
-    if ($script:CodexHomePathExplicit -and $CodexHomePath) {
-        return Join-Path $CodexHomePath $resolution.preferredRelativePath
+    if ($AgentHomePath) {
+        return Join-Path $AgentHomePath $resolution.relativePath
     }
-    if (-not $script:HomePathExplicit -and $CodexHomePath) {
-        return Join-Path $CodexHomePath $resolution.preferredRelativePath
-    }
-    return Join-Path $HomePath $resolution.fallbackRelativePath
+    throw 'Agent Home could not be resolved. Set CODEX_HOME for Codex or pass the current platform Home with -AgentHomePath.'
 }
 
 $script:GlobalInstructionsTarget = Resolve-GlobalInstructionsTarget

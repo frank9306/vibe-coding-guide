@@ -30,9 +30,11 @@
 
 1. 按 `vibe-standard.json` 的 `install` 清单定位全局规则和 Skill；不要从其他来源拼装同名文件。
 2. 解析并检查全局指令文件：
-   - 当前环境设置了 `CODEX_HOME` 时，使用 `$CODEX_HOME/AGENTS.md`；这是 Codex Desktop 等隔离实例的实际全局指令入口。
-   - 没有 `CODEX_HOME` 时，回退到 `~/.agents/AGENTS.md`。
-   - 不要仅根据用户主目录猜测目标；安装前读取当前进程的环境变量并报告解析后的绝对路径。
+   - 先识别当前 Agent 平台实际使用的专用 Home 目录，并将规则写入该目录根部的 `AGENTS.md`。
+   - Codex 环境设置了 `CODEX_HOME` 时，使用 `$CODEX_HOME/AGENTS.md`。
+   - 其他平台必须检查其运行时提供的平台 Home，并使用 `<platform-home>/AGENTS.md`。
+   - 识别不到平台 Home 时停止安装并报告；不要回退到用户目录 `~`，也不要使用 `~/.agents/AGENTS.md`。
+   - 安装前报告解析后的绝对路径。
    - 不存在时，安装清单声明的 `standard/AGENTS.md`。
    - 已存在时，保留原文件，只检查是否缺少安全和验证底线。
    - 需要合并时先展示拟增加内容，不静默覆盖。
@@ -115,7 +117,7 @@ npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --
 
 `install` 脚本只负责安全复制基线，不能代替 AI 完成个性化确认或第三方 Skills 门禁。脚本执行后，Agent 应继续按本契约整理全局 `AGENTS.md`，再询问是否安装推荐 Skills。
 
-脚本默认按上述规则解析全局指令位置。使用 `-HomePath` 做隔离测试时，会把全局指令写到该测试 Home 下的 `.agents/AGENTS.md`，不会写入真实 `CODEX_HOME`；需要显式测试 Codex 目标时，同时传入 `-CodexHomePath <temporary-codex-home>`。
+脚本默认使用 `CODEX_HOME` 作为当前平台 Home。其他平台或隔离测试必须显式传入 `-AgentHomePath <platform-home>`；没有可解析的平台 Home 时脚本停止，不会回退到 `-HomePath` 或用户目录 `~`。`-HomePath` 只控制 `~/.agents/skills/` 对应的 Skill 安装位置。
 
 在其他系统，Agent 可以执行等价的安全文件操作，但必须遵守相同的跳过、备份和授权规则。
 

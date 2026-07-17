@@ -149,7 +149,7 @@ Set-Location vibe-coding-guide
 .\scripts\vibe.ps1 install
 ```
 
-`install` 会把 `project-bootstrap` 安装到 `~/.agents/skills/`。全局规则位置按当前 Agent 环境解析：存在 `CODEX_HOME` 时写入 `$CODEX_HOME/AGENTS.md`，否则回退到 `~/.agents/AGENTS.md`。仅当目标文件不存在时才安装精简模板；脚本不会安装依赖、Plugin 或 MCP，也不会覆盖已有文件。确实需要替换时使用 `-Force`，脚本会先创建带时间戳的备份。脚本完成后，AI 必须确认身份与称呼、默认语言和回复风格，展示差异并经确认后写入同一份全局 `AGENTS.md`。
+`install` 会把 `project-bootstrap` 安装到 `~/.agents/skills/`。全局规则始终放在当前平台 Home 根部：Codex 使用 `$CODEX_HOME/AGENTS.md`，其他平台使用其运行时提供的 `<platform-home>/AGENTS.md`。识别不到平台 Home 时停止安装，不会回退到用户目录 `~`，也不会使用 `~/.agents/AGENTS.md`。仅当目标文件不存在时才安装精简模板；脚本不会安装依赖、Plugin 或 MCP，也不会覆盖已有文件。确实需要替换时使用 `-Force`，脚本会先创建带时间戳的备份。脚本完成后，AI 必须确认身份与称呼、默认语言和回复风格，展示差异并经确认后写入同一份全局 `AGENTS.md`。
 
 个性化确认后，AI 会推荐以下第三方全局 Skills，但不会自动安装：
 

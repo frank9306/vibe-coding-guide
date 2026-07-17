@@ -19,12 +19,12 @@
           "properties": {
             "targetResolution": {
               "type": "object",
-              "required": ["preferredEnvironmentVariable", "preferredRelativePath", "fallbackBase", "fallbackRelativePath"],
+              "required": ["preferredEnvironmentVariable", "relativePath", "requireAgentHome", "allowUserHomeFallback"],
               "properties": {
                 "preferredEnvironmentVariable": { "const": "CODEX_HOME" },
-                "preferredRelativePath": { "const": "AGENTS.md" },
-                "fallbackBase": { "const": "user-home" },
-                "fallbackRelativePath": { "const": ".agents/AGENTS.md" }
+                "relativePath": { "const": "AGENTS.md" },
+                "requireAgentHome": { "const": true },
+                "allowUserHomeFallback": { "const": false }
               }
             },
             "personalization": {
