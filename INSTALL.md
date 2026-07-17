@@ -29,7 +29,10 @@
 ## 安装规则
 
 1. 按 `vibe-standard.json` 的 `install` 清单定位全局规则和 Skill；不要从其他来源拼装同名文件。
-2. 检查 `~/.agents/AGENTS.md`：
+2. 解析并检查全局指令文件：
+   - 当前环境设置了 `CODEX_HOME` 时，使用 `$CODEX_HOME/AGENTS.md`；这是 Codex Desktop 等隔离实例的实际全局指令入口。
+   - 没有 `CODEX_HOME` 时，回退到 `~/.agents/AGENTS.md`。
+   - 不要仅根据用户主目录猜测目标；安装前读取当前进程的环境变量并报告解析后的绝对路径。
    - 不存在时，安装清单声明的 `standard/AGENTS.md`。
    - 已存在时，保留原文件，只检查是否缺少安全和验证底线。
    - 需要合并时先展示拟增加内容，不静默覆盖。
@@ -39,7 +42,7 @@
    - 用户可以用中文回答，但写入 `AGENTS.md` 的规则必须使用英文；名称、称呼和指定短语作为引号中的字面值原样保留。
    - 写入前展示最终内容或差异；目标文件已存在时必须获得合并或覆盖授权。
    - 不把项目命令、机器路径、账号、凭据、私有端点或项目专属规则写入全局文件。
-4. 检查 `~/.agents/skills/project-bootstrap/`：
+4. 检查 `~/.agents/skills/project-bootstrap/`；Skill 目录不随 `CODEX_HOME` 改变：
    - 不存在时，从 `skills/project-bootstrap/` 安装。
    - 已存在时比较内容；相同则跳过，不同则先备份再更新。
 5. 执行推荐 Skills 门禁，按 `install.recommendedSkills` 展示来源、完整命令和 Skill 列表：
@@ -112,6 +115,8 @@ npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --
 
 `install` 脚本只负责安全复制基线，不能代替 AI 完成个性化确认或第三方 Skills 门禁。脚本执行后，Agent 应继续按本契约整理全局 `AGENTS.md`，再询问是否安装推荐 Skills。
 
+脚本默认按上述规则解析全局指令位置。使用 `-HomePath` 做隔离测试时，会把全局指令写到该测试 Home 下的 `.agents/AGENTS.md`，不会写入真实 `CODEX_HOME`；需要显式测试 Codex 目标时，同时传入 `-CodexHomePath <temporary-codex-home>`。
+
 在其他系统，Agent 可以执行等价的安全文件操作，但必须遵守相同的跳过、备份和授权规则。
 
 ## 验收
@@ -119,6 +124,7 @@ npx skills add tw93/Waza --skill check --skill ui --skill health --skill hunt --
 Agent 完成前必须检查：
 
 - 全局现有配置没有被静默覆盖。
+- 全局规则写入当前 Agent 实际读取的路径；存在 `CODEX_HOME` 时已检查 `$CODEX_HOME/AGENTS.md`。
 - 用户提供的个性化偏好已准确写入，或明确选择使用默认值；没有未经确认的第二种安装模式。
 - 全局规则不包含项目专属信息、凭据或机器私有信息。
 - 全局规则使用英文，默认回复语言仍为简体中文；个性化字面值保持原样。

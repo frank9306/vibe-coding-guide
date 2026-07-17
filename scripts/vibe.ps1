@@ -5,14 +5,29 @@ param(
     [string]$Command = 'doctor',
     [string]$Path = (Get-Location).Path,
     [string]$HomePath = $HOME,
+    [string]$CodexHomePath = $env:CODEX_HOME,
     [switch]$Force
 )
 
 $ErrorActionPreference = 'Stop'
+$script:HomePathExplicit = $PSBoundParameters.ContainsKey('HomePath')
+$script:CodexHomePathExplicit = $PSBoundParameters.ContainsKey('CodexHomePath')
 $script:RepoRoot = Split-Path -Parent $PSScriptRoot
 $script:Manifest = Get-Content -LiteralPath (Join-Path $script:RepoRoot 'vibe-standard.json') -Raw -Encoding utf8 | ConvertFrom-Json
-$script:AgentRoot = Join-Path $HomePath '.agents'
 $script:InstalledSkill = Join-Path $HomePath $script:Manifest.install.skills[0].target
+
+function Resolve-GlobalInstructionsTarget {
+    $resolution = $script:Manifest.install.globalInstructions.targetResolution
+    if ($script:CodexHomePathExplicit -and $CodexHomePath) {
+        return Join-Path $CodexHomePath $resolution.preferredRelativePath
+    }
+    if (-not $script:HomePathExplicit -and $CodexHomePath) {
+        return Join-Path $CodexHomePath $resolution.preferredRelativePath
+    }
+    return Join-Path $HomePath $resolution.fallbackRelativePath
+}
+
+$script:GlobalInstructionsTarget = Resolve-GlobalInstructionsTarget
 
 function Write-Status([string]$State, [string]$Message) {
     Write-Host ("[{0}] {1}" -f $State, $Message)
@@ -44,7 +59,7 @@ function Install-Governance {
         Copy-GovernedItem (Join-Path $script:RepoRoot $skill.source) (Join-Path $HomePath $skill.target)
     }
     $global = $script:Manifest.install.globalInstructions
-    Copy-GovernedItem (Join-Path $script:RepoRoot $global.source) (Join-Path $HomePath $global.target)
+    Copy-GovernedItem (Join-Path $script:RepoRoot $global.source) $script:GlobalInstructionsTarget
     Write-Status 'NEXT' 'Confirm identity, language, and response style; write rules in English and preserve literal names or phrases.'
     Write-Status 'RECOMMEND' $script:Manifest.install.recommendedSkills.command
     Write-Status 'GATE' 'Recommend the manifest-declared Waza Skills, but run the command only after explicit user approval.'
@@ -66,7 +81,7 @@ function Initialize-Project {
 function Test-Governance {
     $project = [System.IO.Path]::GetFullPath($Path)
     $checks = @(
-        @{ Name = 'global AGENTS.md'; Path = (Join-Path $script:AgentRoot 'AGENTS.md') },
+        @{ Name = 'global AGENTS.md'; Path = $script:GlobalInstructionsTarget },
         @{ Name = 'project-bootstrap skill'; Path = (Join-Path $script:InstalledSkill 'SKILL.md') },
         @{ Name = 'project AGENTS.md'; Path = (Join-Path $project 'AGENTS.md') },
         @{ Name = 'Claude adapter'; Path = (Join-Path $project 'CLAUDE.md') }

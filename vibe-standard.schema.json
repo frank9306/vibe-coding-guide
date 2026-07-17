@@ -15,8 +15,18 @@
       "properties": {
         "globalInstructions": {
           "type": "object",
-          "required": ["source", "target", "strategy"],
+          "required": ["source", "targetResolution", "strategy"],
           "properties": {
+            "targetResolution": {
+              "type": "object",
+              "required": ["preferredEnvironmentVariable", "preferredRelativePath", "fallbackBase", "fallbackRelativePath"],
+              "properties": {
+                "preferredEnvironmentVariable": { "const": "CODEX_HOME" },
+                "preferredRelativePath": { "const": "AGENTS.md" },
+                "fallbackBase": { "const": "user-home" },
+                "fallbackRelativePath": { "const": ".agents/AGENTS.md" }
+              }
+            },
             "personalization": {
               "type": "object",
               "required": ["required", "allowDefaults", "mode", "writeLanguage", "preserveLiteralValues", "fields"]

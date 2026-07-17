@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- 全局安装现在优先将规则写入当前 `CODEX_HOME/AGENTS.md`，并在没有 `CODEX_HOME` 时回退到 `~/.agents/AGENTS.md`。
+
 ## [1.1.1] - 2026-07-17
 
 ### Changed

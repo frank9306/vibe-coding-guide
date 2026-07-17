@@ -29,8 +29,9 @@ if ($null -ne $manifest) {
     }
 
     $personalization = $manifest.install.globalInstructions.personalization
+    $targetResolution = $manifest.install.globalInstructions.targetResolution
     $expectedFields = @('identity-and-addressing', 'language', 'response-style')
-    if ($manifest.instructionLanguage -ne 'en' -or $null -eq $personalization -or $personalization.required -ne $true -or $personalization.allowDefaults -ne $true -or $personalization.mode -ne 'agent-guided-review-merge' -or $personalization.writeLanguage -ne 'en' -or $personalization.preserveLiteralValues -ne $true) {
+    if ($manifest.instructionLanguage -ne 'en' -or $null -eq $personalization -or $personalization.required -ne $true -or $personalization.allowDefaults -ne $true -or $personalization.mode -ne 'agent-guided-review-merge' -or $personalization.writeLanguage -ne 'en' -or $personalization.preserveLiteralValues -ne $true -or $targetResolution.preferredEnvironmentVariable -ne 'CODEX_HOME' -or $targetResolution.preferredRelativePath -ne 'AGENTS.md' -or $targetResolution.fallbackBase -ne 'user-home' -or $targetResolution.fallbackRelativePath -ne '.agents/AGENTS.md') {
         Add-Error 'Manifest global personalization contract is invalid'
     } else {
         $actualFields = @($personalization.fields)

@@ -8,7 +8,12 @@
   "install": {
     "globalInstructions": {
       "source": "standard/AGENTS.md",
-      "target": ".agents/AGENTS.md",
+      "targetResolution": {
+        "preferredEnvironmentVariable": "CODEX_HOME",
+        "preferredRelativePath": "AGENTS.md",
+        "fallbackBase": "user-home",
+        "fallbackRelativePath": ".agents/AGENTS.md"
+      },
       "strategy": "preserve-or-review-merge",
       "personalization": {
         "required": true,
